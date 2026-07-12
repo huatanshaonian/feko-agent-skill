@@ -15,10 +15,19 @@ Prefer CADFEKO Lua and FEKO command-line tools for repeatability. Use GUI intera
 4. Use a CADFEKO Lua script to build or modify the model. For FEKO 2021 patterns and known compatibility details, read [references/cadfeko-2021.md](references/cadfeko-2021.md).
 5. Run CADFEKO non-interactively and verify that `.cfx`, `.cfm`, and `.pre` exist. Do not trust exit code 0 alone.
 6. Launch `runfeko` from the model directory using only the basename; FEKO 2021 PREFEKO may reject a path with error 30005.
-7. Monitor the relevant process group and `.out` file. Do not start a duplicate solve when `runfeko`, `mpiexec`, or FEKO MPI workers for the model are alive.
+7. Establish persistent monitoring before handing control back. Monitor the relevant process group, `.out`, expected exports, and progress timestamps. Do not start a duplicate solve when `runfeko`, `mpiexec`, or FEKO MPI workers for the model are alive.
 8. Validate completion from `.out` and expected exports. Treat process exit without `.ffe` or the requested artifact as incomplete.
 9. After successful completion, verify the expected result files structurally, not only by existence. For `.ffe`, require a non-zero size and the expected request/data-block count. Then delete only the completed job's matching `.str` recovery file to reclaim disk space. Preserve `.str` whenever the solve is active, interrupted, failed, or the requested results are missing or incomplete.
 10. Report exact model assumptions, output paths, solver state, warnings, result validation, `.str` cleanup, and whether results are complete or still running.
+
+## Persistent monitoring contract
+
+- Treat a request such as "run it", "wait until it finishes", or "report when complete" as requiring monitoring for the entire job lifecycle, not merely launching a background process.
+- Use a product-supported recurring monitor, thread automation, durable goal, or equivalent callback when available. Keep a machine-readable job manifest containing the model, process identifiers, start time, last progress time, expected outputs, and completion criteria.
+- Continue monitoring even if the user sends unrelated messages or temporarily stops interacting. Only an explicit request to stop, cancel, or detach monitoring ends this obligation.
+- Notify the user when the job completes, fails, stalls beyond a reasonable interval, loses its solver process, or requires a decision. Include validation and cleanup results in the completion notification.
+- Do not treat a visible terminal, detached shell, log file, or OS background process as a notification mechanism. These may execute the job but cannot by themselves satisfy the reporting obligation.
+- Before ending a turn while a job is active, verify that a durable monitor capable of returning an event to the conversation is active. If the current environment has no such mechanism, keep the turn polling when practical or explicitly state that proactive follow-up is unavailable; never imply that a background script will automatically notify the conversation.
 
 ## Reusable resources
 
