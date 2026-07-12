@@ -1,0 +1,16 @@
+# FEKO generated models and result files
+*.bof
+*.cfm
+*.cfs
+*.cfx
+*.fek
+*.ffe
+*.log
+*.out
+*.pre
+
+# Local user configuration and editor files
+feko_user/
+.idea/
+.vscode/
+Thumbs.db

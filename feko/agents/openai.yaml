@@ -1,0 +1,4 @@
+interface:
+  display_name: "Altair FEKO"
+  short_description: "Automate FEKO modelling, solving, and result checks"
+  default_prompt: "Use $feko to build and run a parameterised FEKO simulation."
